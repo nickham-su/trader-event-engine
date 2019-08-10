@@ -1,7 +1,7 @@
 package eventEngine
 
 import (
-	queue "go-queue"
+	"github.com/nickham-su/go-queue"
 )
 
 func New(newTickChannel <-chan interface{}, doneChannel <-chan interface{}) *EventEngine {
