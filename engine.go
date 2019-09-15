@@ -11,6 +11,7 @@ func New(newTickChannel <-chan interface{}, doneChannel <-chan interface{}) *Eve
 		make(map[EventType][]EventHandler),
 		newTickChannel,
 		doneChannel,
+		make(map[string]interface{}),
 	}
 }
 
@@ -21,6 +22,7 @@ type EventEngine struct {
 	generalHandlers map[EventType][]EventHandler // 全局事件处理方法
 	newTickChannel  <-chan interface{}           // 新tick通道
 	doneChannel     <-chan interface{}           // 完成通道
+	context         map[string]interface{}       // 上下文环境
 }
 
 // 注册事件处理方法
@@ -64,10 +66,18 @@ func (e *EventEngine) process(event *Event) {
 	et := event.EventType
 
 	for _, eh := range e.handlers[et] {
-		eh.Handler(event)
+		eh.Handler(event, e)
 	}
 
 	for _, eh := range e.generalHandlers[et] {
-		eh.Handler(event)
+		eh.Handler(event, e)
 	}
+}
+
+func (e *EventEngine) SetContext(key string, value interface{}) {
+	e.context[key] = value
+}
+
+func (e *EventEngine) GetContext(key string) interface{} {
+	return e.context[key]
 }
