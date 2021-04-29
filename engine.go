@@ -81,3 +81,8 @@ func (e *EventEngine) SetContext(key string, value interface{}) {
 func (e *EventEngine) GetContext(key string) interface{} {
 	return e.context[key]
 }
+
+// 清空事件队列
+func (e *EventEngine) ClearQueue() {
+	e.queue.Clear()
+}
