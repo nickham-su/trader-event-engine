@@ -1,4 +1,4 @@
-package eventEngine
+package event_engine
 
 // 事件
 type Event struct {

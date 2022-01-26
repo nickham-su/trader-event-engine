@@ -1,4 +1,4 @@
-package eventEngine
+package event_engine
 
 import (
 	"github.com/nickham-su/go-queue"

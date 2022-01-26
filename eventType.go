@@ -1,4 +1,4 @@
-package eventEngine
+package event_engine
 
 type EventType int
 
