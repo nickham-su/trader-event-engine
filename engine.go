@@ -8,7 +8,7 @@ func New(newTickChannel <-chan interface{}, doneChannel <-chan interface{}) *Eve
 	return &EventEngine{
 		new(queue.Queue),
 		make(map[EventType][]EventHandler),
-		make(map[EventType][]EventHandler),
+		make([]EventHandler, 0),
 		newTickChannel,
 		doneChannel,
 		make(map[string]interface{}),
@@ -19,7 +19,7 @@ func New(newTickChannel <-chan interface{}, doneChannel <-chan interface{}) *Eve
 type EventEngine struct {
 	queue           *queue.Queue                 // 事件队列
 	handlers        map[EventType][]EventHandler // 事件处理方法
-	generalHandlers map[EventType][]EventHandler // 全局事件处理方法
+	generalHandlers []EventHandler               // 全局事件处理方法
 	newTickChannel  <-chan interface{}           // 新tick通道
 	doneChannel     <-chan interface{}           // 完成通道
 	context         map[string]interface{}       // 上下文环境
@@ -31,8 +31,8 @@ func (e *EventEngine) Register(eventType EventType, eh EventHandler) {
 }
 
 // 注册全局时间处理方法
-func (e *EventEngine) RegisterGeneral(eventType EventType, eh EventHandler) {
-	e.generalHandlers[eventType] = append(e.generalHandlers[eventType], eh)
+func (e *EventEngine) RegisterGeneral(eh EventHandler) {
+	e.generalHandlers = append(e.generalHandlers, eh)
 }
 
 // 添加事件
@@ -69,7 +69,7 @@ func (e *EventEngine) process(event *Event) {
 		eh.Handler(event, e)
 	}
 
-	for _, eh := range e.generalHandlers[et] {
+	for _, eh := range e.generalHandlers {
 		eh.Handler(event, e)
 	}
 }
